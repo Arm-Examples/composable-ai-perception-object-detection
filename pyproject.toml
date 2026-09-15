@@ -1,0 +1,18 @@
+[project]
+name = "opk-perception-example"
+version = "0.0.0"
+requires-python = ">=3.12"
+dependencies = [
+    "cairn-sdk-lib==0.0.2",
+    "opk-perception-sdk==0.3.0", # do we need this?
+    "protobuf==7.35.1",
+]
+
+[tool.uv.sources]
+cairn-sdk-lib = { index = "edge-ai-tooling" }
+opk-perception-sdk = { index = "edge-ai-tooling" }
+
+[[tool.uv.index]]
+name = "edge-ai-tooling"
+url = "https://artifactory.arm.com/artifactory/api/pypi/edge-ai-tooling.pypi/simple"
+explicit = true

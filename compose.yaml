@@ -1,0 +1,98 @@
+services:
+  messaging-service:
+    image: ghcr.io/arm-debug/cairn-messaging-service@sha256:f2baa25a9d255e54d2e5329d80046f31508dabb97c891f17b53a442773cd4099
+    network_mode: host
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+
+  camera-service:
+    image: ghcr.io/arm-debug/cairn-camera-service@sha256:d44fe528866948dc245553ddcb60d60bc1355f4f2e7432314a79e9e8e0c512a1
+    user: root
+    entrypoint: ["/usr/local/bin/permissions-set-entrypint.sh"]
+    network_mode: host
+    group_add: [video]
+    cap_add: [SYS_NICE]
+    device_cgroup_rules: ["c *:* rw"]
+    environment:
+      XDG_RUNTIME_DIR: /run/pipewire
+      PWC_REDIS_ENABLED: 1
+      PWC_REDIS_HOST: 127.0.0.1
+      PWC_REDIS_PORT: 6379
+      PWC_REDIS_CHANNEL_EVENTS: camera.events
+    volumes:
+      - pipewire-runtime:/run/pipewire
+      - /dev:/dev
+      - /run/udev:/run/udev:ro
+    healthcheck:
+      test: ["CMD", "grpc_health_probe", "-addr=127.0.0.1:50051"]
+      interval: 5s
+      timeout: 6s
+      start_period: 15s
+      retries: 12
+    depends_on:
+      messaging-service:
+        condition: service_healthy
+
+  perception-service:
+    image: ghcr.io/arm-debug/cairn-perception-service@sha256:f1f2ac5ed45fd9998117f12f51a298e1c4bc432f6618ef2bcd7c85679227d53f
+    network_mode: host
+    command: ["/app/.venv/bin/python", "-B", "-m", "perception_service", "--model-path", "/work/config/models", "--redis-url", "redis://127.0.0.1:6379/0"]
+    environment:
+      XDG_RUNTIME_DIR: /run/pipewire
+    volumes:
+      - pipewire-runtime:/run/pipewire:ro
+      - type: image
+        source: perception-example:local
+        target: /work/config/models
+        read_only: true
+        image:
+          subpath: models
+
+  perception-example:
+    image: perception-example:local
+    build:
+      context: .
+      args:
+        HF_REPO_ID: ${HF_REPO_ID:-Arm/Yolo-v11}
+      secrets: [artifactory_token, hf_token]
+    network_mode: host
+    environment:
+      CAMERA_ENDPOINT: http://127.0.0.1:50051
+      PERCEPTION_ENDPOINT: http://127.0.0.1:50053
+      REDIS_ENDPOINT: redis://127.0.0.1:6379/0
+      WORKFLOW_DURATION_SECONDS: 60
+    depends_on:
+      camera-service:
+        condition: service_healthy
+      perception-service:
+        condition: service_started
+    restart: "no"
+
+secrets:
+  artifactory_token:
+    environment: ARTIFACTORY_TOKEN
+  hf_token:
+    environment: HF_TOKEN
+
+volumes:
+  pipewire-runtime:
+
+x-topo:
+  name: Open Perception Kit Yolo-v11 example
+  type: application
+  description: Runs a Cairn camera-to-inference workflow and prints Yolo-v11 detections.
+  deployment_success_message: The Yolo-v11 workflow is running for one minute. Inspect the perception-example service logs for detections.
+  parameters:
+    HF_REPO_ID:
+      description: Hugging Face model repository
+      required: false
+      default: Arm/Yolo-v11
+      example: Arm/Yolo-v11
+      hints:
+        meta.type: huggingface.repo-id
+        model.task: object-detection
+        model.format: onnx
+        perception.compatible : true
