@@ -4,7 +4,7 @@ ARG UV_IMAGE=ghcr.io/astral-sh/uv:trixie-slim@sha256:4298dc3494124b50792f7abbdfe
 FROM ${UV_IMAGE} AS builder
 
 ARG HF_REPO_ID=Arm/Yolo-v11
-RUN apt-get update && apt-get install -y --no-install-recommends curl \
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl \
     && rm -rf /var/lib/apt/lists/*
 
 COPY scripts/download-model.sh /usr/local/bin/download-model.sh

@@ -1,6 +1,7 @@
 services:
   messaging-service:
-    image: ghcr.io/arm-debug/cairn-messaging-service@sha256:f2baa25a9d255e54d2e5329d80046f31508dabb97c891f17b53a442773cd4099
+    platform: linux/arm64
+    image: ghcr.io/arm-debug/cairn-messaging-service:feat-implement-python-deserialise
     network_mode: host
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
@@ -9,7 +10,8 @@ services:
       retries: 10
 
   camera-service:
-    image: ghcr.io/arm-debug/cairn-camera-service@sha256:d44fe528866948dc245553ddcb60d60bc1355f4f2e7432314a79e9e8e0c512a1
+    platform: linux/arm64
+    image: ghcr.io/arm-debug/cairn-camera-service:feat-implement-python-deserialise
     user: root
     entrypoint: ["/usr/local/bin/permissions-set-entrypint.sh"]
     network_mode: host
@@ -37,7 +39,8 @@ services:
         condition: service_healthy
 
   perception-service:
-    image: ghcr.io/arm-debug/cairn-perception-service@sha256:f1f2ac5ed45fd9998117f12f51a298e1c4bc432f6618ef2bcd7c85679227d53f
+    platform: linux/arm64
+    image: ghcr.io/arm-debug/cairn-perception-service:feat-implement-python-deserialise
     network_mode: host
     command: ["/app/.venv/bin/python", "-B", "-m", "perception_service", "--model-path", "/work/config/models", "--redis-url", "redis://127.0.0.1:6379/0"]
     environment:
@@ -52,6 +55,7 @@ services:
           subpath: models
 
   perception-example:
+    platform: linux/arm64
     image: perception-example:local
     build:
       context: .

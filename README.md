@@ -12,6 +12,7 @@ Copy the credential template and set both values:
 
 ```sh
 cp .env.example .env
+set -a; . ./.env; set +a
 ```
 
 Authenticate Docker to the private service-image registry. `gh auth token`
