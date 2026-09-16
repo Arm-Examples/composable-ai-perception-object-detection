@@ -24,7 +24,7 @@ async def main() -> None:
         "detection-workflow",
         stream_configurations[0],
     )
-    workflow.infer("objects", "detection-model")
+    workflow.infer("objects", "detection_model")
 
     service = await PerceptionService.connect(PERCEPTION_ENDPOINT)
     session = await service.deploy(workflow)

@@ -7,7 +7,7 @@ env | while IFS="=" read -r name hf_repo; do
     *) continue ;;
   esac
 
-  model_id="$(printf '%s' "${name#OPK_HF_}" | tr '[:upper:]_' '[:lower:]-')"
+  model_id="$(printf '%s' "${name#OPK_HF_}" | tr '[:upper:]' '[:lower:]')"
   hf_repo="${hf_repo#https://huggingface.co/}"
   hf_repo="${hf_repo%/}"
   case "$hf_repo" in
