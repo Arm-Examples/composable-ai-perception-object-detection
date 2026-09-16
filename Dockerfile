@@ -3,14 +3,15 @@ ARG UV_IMAGE=ghcr.io/astral-sh/uv:trixie-slim@sha256:4298dc3494124b50792f7abbdfe
 
 FROM ${UV_IMAGE} AS builder
 
-ARG HF_REPO_ID=Arm/Yolo-v11
+ARG OPK_HF_DETECTION_MODEL=Arm/Yolo-v11
+ENV UV_PYTHON_INSTALL_DIR=/opt/uv/python
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl \
     && rm -rf /var/lib/apt/lists/*
 
 COPY scripts/download-model.sh /usr/local/bin/download-model.sh
 RUN --mount=type=secret,id=hf_token,required=true \
     HF_TOKEN="$(cat /run/secrets/hf_token)" \
-    HF_REPO_ID="${HF_REPO_ID}" \
+    OPK_HF_DETECTION_MODEL="${OPK_HF_DETECTION_MODEL}" \
     sh /usr/local/bin/download-model.sh
 
 WORKDIR /app
@@ -26,10 +27,11 @@ FROM ${UV_IMAGE} AS runtime
 WORKDIR /app
 
 COPY --from=builder /app/.venv /app/.venv
+COPY --from=builder /opt/uv/python /opt/uv/python
 COPY main.py ./main.py
 COPY --from=builder /models/ /models/
 RUN useradd --create-home --uid 10001 app
 
 USER app
 
-CMD ["/app/.venv/bin/python", "-B", "main.py"]
+CMD ["uv", "run", "main.py"]

@@ -8,11 +8,22 @@ Start by cloning the project and providing a compatible example.
 ## Pre-release
 The following steps only apply pre-release: 
 
-Copy the credential template and set both values:
+Copy the credential template and set both values. Set
+`OPK_HF_DETECTION_MODEL` to either `Arm/Yolo-v11` or its full Hugging Face URL
+to select the object-detection model.
 
+bash, sh, zsh, etc.
 ```sh
 cp .env.example .env
 set -a; . ./.env; set +a
+```
+
+or for fish:
+```fish
+for line in (string match -rv '^\s*(#|$)' < .env)
+    set -l entry (string split -m1 = -- $line)
+    set -gx $entry[1] $entry[2]
+end
 ```
 
 Authenticate Docker to the private service-image registry. `gh auth token`

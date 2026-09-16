@@ -13,7 +13,7 @@ WORKFLOW_DURATION_SECONDS = float(os.environ.get("WORKFLOW_DURATION_SECONDS", "6
 
 async def main() -> None:
     camera = CameraService(CAMERA_ENDPOINT).list_cameras()[0]
-    stream_configurations = camera.get_stream_configurations(
+    stream_configurations = await camera.get_stream_configurations(
         resolution=(640, 480),
         pixel_format="YUY2",
     )
@@ -24,9 +24,7 @@ async def main() -> None:
         "detection-workflow",
         stream_configurations[0],
     )
-    workflow.infer(
-        "objects", "classification_model"
-    )  # 'classification_model' is the name of the folder that the model and
+    workflow.infer("objects", "detection-model")
 
     service = await PerceptionService.connect(PERCEPTION_ENDPOINT)
     session = await service.deploy(workflow)
