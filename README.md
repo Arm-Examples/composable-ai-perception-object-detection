@@ -2,8 +2,8 @@
 
 This example shows the Cairn Open Perception Stack in action, running inference models on a camera.
 
-Start by cloning the project and providing a compatible example.
-`topo clone <url>`
+Start by cloning the project, and providing a compatible model.
+`topo clone https://github.com/Arm-Examples/cairn-perception-object-detection.git`
 
 ## Pre-release
 The following steps only apply pre-release: 
@@ -39,7 +39,7 @@ Deploy to a remote or local target using [Topo](https://developer.arm.com/dev-do
 Your target will need a USB web camera, or a Pi Camera plugged in.
 
 ```sh
-topo deloy --target pi5-grimes
+topo deloy --target user@my-linux-device
 ```
 On success, a command will be printed to ssh and print out the inferences run on the container.
 
