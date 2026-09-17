@@ -103,6 +103,6 @@ x-topo:
       example: https://huggingface.co/Arm/Yolo-v11
       hints:
         meta.type: huggingface.repo-id
+        meta.compatibility: opk
         model.task: object-detection
         model.format: onnx
-        perception.compatible: true
