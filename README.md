@@ -1,4 +1,4 @@
-# Cairn:Perception Classification Example
+# Cairn:Perception Object Detection Example
 
 This example shows the Cairn Open Perception Stack in action, running inference models on a camera.
 
