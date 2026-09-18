@@ -91,9 +91,9 @@ volumes:
   pipewire-runtime:
 
 x-topo:
-  name: Open Perception Kit Yolo-v11 example
+  name: Cairn Perception Object Detection example
   type: application
-  description: Runs a Cairn camera-to-inference workflow and prints Yolo-v11 detections.
+  description: Runs a Cairn camera-to-inference workflow and prints object detections.
   deployment_success_message: "View live logs: \nssh ${TOPO_TARGET} 'docker logs --follow perception-hello-world-perception-example-1'"
   parameters:
     OPK_HF_DETECTION_MODEL:
