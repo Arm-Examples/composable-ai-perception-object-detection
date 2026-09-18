@@ -1,5 +1,5 @@
 [project]
-name = "opk-perception-example"
+name = "cairn-perception-object-detection-example"
 version = "0.0.0"
 requires-python = ">=3.12"
 dependencies = [
