@@ -41,8 +41,7 @@ services:
   perception-service:
     platform: linux/arm64
     image: ghcr.io/arm-debug/cairn-perception-service:feat-implement-python-deserialise
-    network_mode: host
-    command: ["/app/.venv/bin/python", "-B", "-m", "perception_service", "--model-path", "/work/config/models", "--redis-url", "redis://127.0.0.1:6379/0"]
+    command: ["/app/.venv/bin/python", "-B", "-m", "perception_service", "--model-path", "/work/config/models", "--redis-url", "redis://messaging-service:6379/0"]
     healthcheck:
       test: ["CMD", "grpc_health_probe", "-addr=127.0.0.1:50053"]
       interval: 5s
@@ -68,11 +67,12 @@ services:
       args:
         OPK_HF_DETECTION_MODEL: ${OPK_HF_DETECTION_MODEL:-Arm/Yolo-v11}
       secrets: [artifactory_token, hf_token]
-    network_mode: host
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
-      CAMERA_ENDPOINT: http://127.0.0.1:50051
-      PERCEPTION_ENDPOINT: http://127.0.0.1:50053
-      REDIS_ENDPOINT: redis://127.0.0.1:6379/0
+      CAMERA_ENDPOINT: http://host.docker.internal:50051
+      PERCEPTION_ENDPOINT: http://perception-service:50053
+      REDIS_ENDPOINT: redis://messaging-service:6379/0
       WORKFLOW_DURATION_SECONDS: 60
     depends_on:
       camera-service:
