@@ -2,8 +2,12 @@ import asyncio
 import os
 
 from cairn_sdk import CameraService, Notification, NotificationService
-from cairn_sdk.perception import PerceptionResult, PerceptionService, PerceptionWorkflow
-from cairn_sdk.perception.types import BoxDetectionsT
+from cairn_sdk.perception import (
+    BoxDetections,
+    PerceptionResult,
+    PerceptionService,
+    PerceptionWorkflow,
+)
 
 CAMERA_ENDPOINT = os.environ.get("CAMERA_ENDPOINT", "http://127.0.0.1:50051")
 PERCEPTION_ENDPOINT = os.environ.get("PERCEPTION_ENDPOINT", "http://127.0.0.1:50053")
@@ -12,17 +16,29 @@ WORKFLOW_DURATION_SECONDS = float(os.environ.get("WORKFLOW_DURATION_SECONDS", "6
 
 
 async def main() -> None:
-    camera = CameraService(CAMERA_ENDPOINT).list_cameras()[0]
-    stream_configurations = await camera.get_stream_configurations(
-        resolution=(640, 480),
-        pixel_format="YUY2",
-    )
-    if not stream_configurations:
-        raise RuntimeError("camera has no 640x480 YUY2 stream at 30 fps")
+    camera_configuration = None
+    cameras = CameraService(CAMERA_ENDPOINT).list_cameras()
+    for camera in cameras:
+        for pixel_format in ("RGB", "YUY2"):
+            stream_configurations = await camera.get_stream_configurations(
+                resolution=(640, 480),
+                pixel_format=pixel_format,
+                frame_rate=(30, 1),
+            )
+            if stream_configurations:
+                camera_configuration = stream_configurations[0]
+                break
+        if camera_configuration is not None:
+            break
+
+    if camera_configuration is None:
+        raise RuntimeError(
+            "camera has no 640x480 RGB or YUY2 stream at 30 fps"
+        )
 
     workflow = PerceptionWorkflow(
         "detection-workflow",
-        stream_configurations[0],
+        camera_configuration,
     )
     workflow.infer("objects", "detection_model")
 
@@ -34,9 +50,9 @@ async def main() -> None:
     async def print_result(notification: Notification) -> None:
         result = PerceptionResult.decode(notification.payload)
         detections: list[str] = [
-            f"{detection.text.decode() if isinstance(detection.text, bytes) else detection.text} "
-            f"{detection.confidence:.0%}"
-            for payload in result.payloads(BoxDetectionsT)
+            f"{detection.text or detection.class_id} {detection.confidence:.0%}"
+            for payload in result.entries
+            if isinstance(payload, BoxDetections)
             for detection in payload.detections or []
         ]
         print(

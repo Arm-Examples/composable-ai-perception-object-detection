@@ -1,24 +1,13 @@
 version = 1
 revision = 3
-requires-python = ">=3.12"
+requires-python = "==3.12.*"
 
 [[package]]
 name = "cairn-sdk-lib"
-version = "0.0.2"
-source = { registry = "https://artifactory.arm.com/artifactory/api/pypi/edge-ai-tooling.pypi/simple" }
-dependencies = [
-    { name = "opk-perception-sdk" },
-]
+version = "0.0.1"
+source = { url = "https://artifactory.arm.com/artifactory/api/pypi/edge-ai-tooling.pypi/cairn-sdk-lib/0.0.1/cairn_sdk_lib-0.0.1-cp312-abi3-linux_aarch64.whl" }
 wheels = [
-    { url = "https://artifactory.arm.com/artifactory/api/pypi/edge-ai-tooling.pypi/cairn-sdk-lib/0.0.2/cairn_sdk_lib-0.0.2-cp312-abi3-linux_aarch64.whl", hash = "sha256:934f150c94f7f453cbb678853d48d2c118f56643afa7413d7258f914191e8a42" },
-]
-
-[[package]]
-name = "flatbuffers"
-version = "25.12.19"
-source = { registry = "https://pypi.org/simple" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/e8/2d/d2a548598be01649e2d46231d151a6c56d10b964d94043a335ae56ea2d92/flatbuffers-25.12.19-py2.py3-none-any.whl", hash = "sha256:7634f50c427838bb021c2d66a3d1168e9d199b0607e6329399f04846d42e20b4", size = 26661, upload-time = "2025-12-19T23:16:13.622Z" },
+    { url = "https://artifactory.arm.com/artifactory/api/pypi/edge-ai-tooling.pypi/cairn-sdk-lib/0.0.1/cairn_sdk_lib-0.0.1-cp312-abi3-linux_aarch64.whl", hash = "sha256:3857440408f91318e45de3b484e7c8b3600a6cc4dc3d68f157f22d8fd14ce7dc" },
 ]
 
 [[package]]
@@ -27,26 +16,13 @@ version = "0.0.0"
 source = { virtual = "." }
 dependencies = [
     { name = "cairn-sdk-lib" },
-    { name = "opk-perception-sdk" },
     { name = "protobuf" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "cairn-sdk-lib", specifier = "==0.0.2", index = "https://artifactory.arm.com/artifactory/api/pypi/edge-ai-tooling.pypi/simple" },
-    { name = "opk-perception-sdk", specifier = "==0.3.0", index = "https://artifactory.arm.com/artifactory/api/pypi/edge-ai-tooling.pypi/simple" },
+    { name = "cairn-sdk-lib", url = "https://artifactory.arm.com/artifactory/api/pypi/edge-ai-tooling.pypi/cairn-sdk-lib/0.0.1/cairn_sdk_lib-0.0.1-cp312-abi3-linux_aarch64.whl" },
     { name = "protobuf", specifier = "==7.35.1" },
-]
-
-[[package]]
-name = "opk-perception-sdk"
-version = "0.3.0"
-source = { registry = "https://artifactory.arm.com/artifactory/api/pypi/edge-ai-tooling.pypi/simple" }
-dependencies = [
-    { name = "flatbuffers" },
-]
-wheels = [
-    { url = "https://artifactory.arm.com/artifactory/api/pypi/edge-ai-tooling.pypi/opk-perception-sdk/0.3.0/opk_perception_sdk-0.3.0-py3-none-any.whl", hash = "sha256:39aa985f5a04bb48d4ea48b7d92fdd463e6ab09de35569fb9746c6ae180e023c" },
 ]
 
 [[package]]
