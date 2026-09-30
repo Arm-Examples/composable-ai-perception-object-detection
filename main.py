@@ -18,8 +18,8 @@ WORKFLOW_DURATION_SECONDS = float(os.environ.get("WORKFLOW_DURATION_SECONDS", "6
 async def main() -> None:
     camera_configuration = None
     cameras = CameraService(CAMERA_ENDPOINT).list_cameras()
-    for camera in cameras:
-        for pixel_format in ("RGB", "YUY2"):
+    for pixel_format in ("RGB", "YUY2"):
+        for camera in cameras:
             stream_configurations = await camera.get_stream_configurations(
                 resolution=(640, 480),
                 pixel_format=pixel_format,
