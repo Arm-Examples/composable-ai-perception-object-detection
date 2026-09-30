@@ -39,7 +39,7 @@ Deploy to a remote or local target using [Topo](https://developer.arm.com/dev-do
 Your target will need a USB web camera, or a Pi Camera plugged in.
 
 ```sh
-topo deloy --target user@my-linux-device
+topo deploy --target user@my-linux-device
 ```
 On success, a command will be printed to ssh and print out the inferences run on the container.
 
