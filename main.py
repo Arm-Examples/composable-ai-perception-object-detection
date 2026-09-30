@@ -1,25 +1,20 @@
 import asyncio
-import os
+import signal
 
-from cairn_sdk import CameraService, Notification, NotificationService
-from cairn_sdk.perception import (
+from cairn import CameraService, Notification, NotificationService
+from cairn.perception import (
     BoxDetections,
     PerceptionResult,
     PerceptionService,
     PerceptionWorkflow,
 )
 
-CAMERA_ENDPOINT = os.environ.get("CAMERA_ENDPOINT", "http://127.0.0.1:50051")
-PERCEPTION_ENDPOINT = os.environ.get("PERCEPTION_ENDPOINT", "http://127.0.0.1:50053")
-REDIS_ENDPOINT = os.environ.get("REDIS_ENDPOINT", "redis://127.0.0.1:6379/0")
-WORKFLOW_DURATION_SECONDS = float(os.environ.get("WORKFLOW_DURATION_SECONDS", "60"))
-
 
 async def main() -> None:
     camera_configuration = None
-    cameras = CameraService(CAMERA_ENDPOINT).list_cameras()
-    for camera in cameras:
-        for pixel_format in ("RGB", "YUY2"):
+    cameras = CameraService().list_cameras()
+    for pixel_format in ("RGB", "YUY2"):
+        for camera in cameras:
             stream_configurations = await camera.get_stream_configurations(
                 resolution=(640, 480),
                 pixel_format=pixel_format,
@@ -42,9 +37,9 @@ async def main() -> None:
     )
     workflow.infer("objects", "detection_model")
 
-    service = await PerceptionService.connect(PERCEPTION_ENDPOINT)
+    service = await PerceptionService.connect()
     session = await service.deploy(workflow)
-    if session.topics is None:
+    if session.topics.results is None:
         raise RuntimeError("deployment returned no results topic")
 
     async def print_result(notification: Notification) -> None:
@@ -57,18 +52,27 @@ async def main() -> None:
         ]
         print(
             f"result topic={notification.channel} "
-            f"detections={', '.join(detections) or 'none'}"
+            f"detections={', '.join(detections) or 'none'}",
+            flush=True,
         )
 
-    async with NotificationService(REDIS_ENDPOINT) as notifications:
+    async with NotificationService() as notifications:
         subscription = await notifications.subscribe(
             session.topics.results, print_result
         )
+        stopped = asyncio.Event()
+        loop = asyncio.get_running_loop()
+        for shutdown_signal in (signal.SIGTERM, signal.SIGINT):
+            loop.add_signal_handler(shutdown_signal, stopped.set)
         try:
-            await asyncio.sleep(WORKFLOW_DURATION_SECONDS)
+            await stopped.wait()
         finally:
-            await notifications.unsubscribe(subscription)
-            await session.stop()
+            for shutdown_signal in (signal.SIGTERM, signal.SIGINT):
+                loop.remove_signal_handler(shutdown_signal)
+            try:
+                await notifications.unsubscribe(subscription)
+            finally:
+                await session.stop()
 
 
 if __name__ == "__main__":
