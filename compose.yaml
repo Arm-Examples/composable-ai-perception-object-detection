@@ -1,7 +1,7 @@
 services:
   messaging-service:
     platform: linux/arm64
-    image: ghcr.io/arm-debug/cairn-messaging-service:sha-61ea706b52609a8eb56efa1d0ad0af83d1f81cf4
+    image: edge-ai-tooling--sdk-docker-registry.artifactory.eu02.arm.com/cairn-messaging-service:test-f805dd1a-20260930144748
     ports: ["127.0.0.1:6379:6379"]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
@@ -11,7 +11,7 @@ services:
 
   camera-service:
     platform: linux/arm64
-    image: ghcr.io/arm-debug/cairn-camera-service:sha-61ea706b52609a8eb56efa1d0ad0af83d1f81cf4
+    image: edge-ai-tooling--sdk-docker-registry.artifactory.eu02.arm.com/cairn-camera-service:test-f805dd1a-20260930144748
     user: root
     entrypoint: ["/usr/local/bin/permissions-set-entrypoint.sh"]
     network_mode: host
@@ -40,9 +40,11 @@ services:
 
   perception-service:
     platform: linux/arm64
-    image: ghcr.io/arm-debug/cairn-perception-service:sha-61ea706b52609a8eb56efa1d0ad0af83d1f81cf4
-    network_mode: host
-    command: ["/app/.venv/bin/python", "-B", "-m", "perception_service", "--model-path", "/work/config/models", "--redis-url", "redis://127.0.0.1:6379/0"]
+    image: edge-ai-tooling--sdk-docker-registry.artifactory.eu02.arm.com/cairn-perception-service:test-f805dd1a-20260930144748
+    ports: ["127.0.0.1:50053:50053"]
+    depends_on:
+      messaging-service:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "grpc_health_probe", "-addr=127.0.0.1:50053"]
       interval: 5s
@@ -55,7 +57,7 @@ services:
       - pipewire-runtime:/run/pipewire:ro
       - type: image
         source: perception-example:local
-        target: /work/config/models
+        target: /models
         read_only: true
         image:
           subpath: models
@@ -66,13 +68,11 @@ services:
     build:
       context: .
       args:
-        OPK_HF_DETECTION_MODEL: ${OPK_HF_DETECTION_MODEL:-Arm/Yolo-v11}
+        OPK_HF_DETECTION_MODEL: ${OPK_HF_DETECTION_MODEL:-Arm/yolo26n-640-int8-onnx-raspberrypi5}
       secrets: [artifactory_token, hf_token]
+    # SDK defaults reach the host camera and loopback-published services.
     network_mode: host
     environment:
-      CAMERA_ENDPOINT: http://127.0.0.1:50051
-      PERCEPTION_ENDPOINT: http://127.0.0.1:50053
-      REDIS_ENDPOINT: redis://127.0.0.1:6379/0
       WORKFLOW_DURATION_SECONDS: 60
     depends_on:
       camera-service:
@@ -99,8 +99,8 @@ x-topo:
     OPK_HF_DETECTION_MODEL:
       description: Hugging Face repository for the object-detection model
       required: false
-      default: Arm/Yolo-v11
-      example: https://huggingface.co/Arm/Yolo-v11
+      default: Arm/yolo26n-640-int8-onnx-raspberrypi5
+      example: https://huggingface.co/Arm/yolo26n-640-int8-onnx-raspberrypi5
       hints:
         meta.type: huggingface.repo-id
         meta.compatibility: opk

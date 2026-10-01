@@ -3,7 +3,7 @@ ARG UV_IMAGE=ghcr.io/astral-sh/uv:trixie-slim@sha256:4298dc3494124b50792f7abbdfe
 
 FROM ${UV_IMAGE} AS builder
 
-ARG OPK_HF_DETECTION_MODEL=Arm/Yolo-v11
+ARG OPK_HF_DETECTION_MODEL=Arm/yolo26n-640-int8-onnx-raspberrypi5
 ENV UV_PYTHON_INSTALL_DIR=/opt/uv/python
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl \
     && rm -rf /var/lib/apt/lists/*
