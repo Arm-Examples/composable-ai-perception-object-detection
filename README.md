@@ -8,13 +8,9 @@ Start by cloning the project, and providing a compatible model.
 ## Pre-release
 The following steps only apply pre-release: 
 
-Copy the credential template and fill in the credentials. Set
-`OPK_HF_DETECTION_MODEL` to a compatible Hugging Face repository ID or its full URL
-to select the object-detection model. It defaults to
-[`Arm/yolo26n-640-int8-onnx-raspberrypi5`](https://huggingface.co/Arm/yolo26n-640-int8-onnx-raspberrypi5).
-The existing `OPK_HF_*` input and `x-topo` hints are retained for Topo/AI Portal;
-the repository must provide `arm/opk/opchain.json`, `arm/opk/model.json` and the
-referenced model file.
+Copy the credential template and set both values. Set
+`OPK_HF_DETECTION_MODEL` to either `Arm/yolo26n-640-int8-onnx-raspberrypi5` or its full Hugging Face URL
+to select the object-detection model.
 
 bash, sh, zsh, etc.
 ```sh
@@ -30,28 +26,12 @@ for line in (string match -rv '^\s*(#|$)' < .env)
 end
 ```
 
-Authenticate Docker to the private service-image registry using your Artifactory
-username and token (`ARTIFACTORY_USERNAME` and `ARTIFACTORY_TOKEN`):
+Authenticate Docker to the private service-image registry, replacing
+`<artifactory-username>` with your Artifactory username:
 
 ```sh
-printf '%s' "$ARTIFACTORY_TOKEN" | docker login edge-ai-tooling--sdk-docker-registry.artifactory.eu02.arm.com --username "$ARTIFACTORY_USERNAME" --password-stdin
+printf '%s' "$ARTIFACTORY_TOKEN" | docker login edge-ai-tooling--sdk-docker-registry.artifactory.eu02.arm.com --username '<artifactory-username>' --password-stdin
 ```
-
-The service images and Python SDK are pinned to the `20260930144748` development
-build (service revision `f805dd1a`).
-
-## Networking
-
-Camera uses host networking for device uevents. Messaging and perception use the
-Compose network; Redis (6379) and perception gRPC (50053) are published only on
-host loopback. Perception uses its image's default command, `/models` directory
-and `messaging-service` Redis endpoint; camera frames use the shared PipeWire
-socket rather than host networking.
-
-The example application retains host networking so `CameraService()`,
-`PerceptionService.connect()` and `NotificationService()` can use the SDK's
-loopback defaults without endpoint environment variables. Bridging the application
-would require explicit endpoints, including a route to the host camera service.
 
 ## Deploy
 
