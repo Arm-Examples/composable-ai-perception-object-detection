@@ -9,7 +9,7 @@ Start by cloning the project, and providing a compatible model.
 The following steps only apply pre-release: 
 
 Copy the credential template and set both values. Set
-`OPK_HF_DETECTION_MODEL` to either `Arm/Yolo-v11` or its full Hugging Face URL
+`OPK_HF_DETECTION_MODEL` to either `Arm/yolo26n-640-int8-onnx-raspberrypi5` or its full Hugging Face URL
 to select the object-detection model.
 
 bash, sh, zsh, etc.
@@ -26,11 +26,11 @@ for line in (string match -rv '^\s*(#|$)' < .env)
 end
 ```
 
-Authenticate Docker to the private service-image registry. `gh auth token`
-uses the active GitHub CLI account; its token needs `read:packages`.
+Authenticate Docker to the private service-image registry, replacing
+`<artifactory-username>` with your Artifactory username:
 
 ```sh
-gh auth token | docker login ghcr.io --username "$(gh api user --jq .login)" --password-stdin
+printf '%s' "$ARTIFACTORY_TOKEN" | docker login edge-ai-tooling--sdk-docker-registry.artifactory.eu02.arm.com --username '<artifactory-username>' --password-stdin
 ```
 
 ## Deploy

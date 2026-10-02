@@ -9,15 +9,12 @@ from cairn_sdk.perception import (
     PerceptionWorkflow,
 )
 
-CAMERA_ENDPOINT = os.environ.get("CAMERA_ENDPOINT", "http://127.0.0.1:50051")
-PERCEPTION_ENDPOINT = os.environ.get("PERCEPTION_ENDPOINT", "http://127.0.0.1:50053")
-REDIS_ENDPOINT = os.environ.get("REDIS_ENDPOINT", "redis://127.0.0.1:6379/0")
 WORKFLOW_DURATION_SECONDS = float(os.environ.get("WORKFLOW_DURATION_SECONDS", "60"))
 
 
 async def main() -> None:
     camera_configuration = None
-    cameras = CameraService(CAMERA_ENDPOINT).list_cameras()
+    cameras = CameraService().list_cameras()
     for pixel_format in ("RGB", "YUY2"):
         for camera in cameras:
             stream_configurations = await camera.get_stream_configurations(
@@ -42,7 +39,7 @@ async def main() -> None:
     )
     workflow.infer("objects", "detection_model")
 
-    service = await PerceptionService.connect(PERCEPTION_ENDPOINT)
+    service = await PerceptionService.connect()
     session = await service.deploy(workflow)
     if session.topics is None:
         raise RuntimeError("deployment returned no results topic")
@@ -60,7 +57,7 @@ async def main() -> None:
             f"detections={', '.join(detections) or 'none'}"
         )
 
-    async with NotificationService(REDIS_ENDPOINT) as notifications:
+    async with NotificationService() as notifications:
         subscription = await notifications.subscribe(
             session.topics.results, print_result
         )

@@ -13,16 +13,16 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "cairn-sdk-lib", url = "https://artifactory.arm.com/artifactory/api/pypi/edge-ai-tooling.pypi/cairn-sdk-lib/0.0.1/cairn_sdk_lib-0.0.1-cp312-abi3-linux_aarch64.whl" },
+    { name = "cairn-sdk-lib", url = "https://artifactory.arm.com/artifactory/api/pypi/edge-ai-tooling.pypi/cairn-sdk-lib/0.0.1.dev20260930144748/cairn_sdk_lib-0.0.1.dev20260930144748-cp312-abi3-linux_aarch64.whl" },
     { name = "protobuf", specifier = "==7.35.1" },
 ]
 
 [[package]]
 name = "cairn-sdk-lib"
-version = "0.0.1"
-source = { url = "https://artifactory.arm.com/artifactory/api/pypi/edge-ai-tooling.pypi/cairn-sdk-lib/0.0.1/cairn_sdk_lib-0.0.1-cp312-abi3-linux_aarch64.whl" }
+version = "0.0.1.dev20260930144748"
+source = { url = "https://artifactory.arm.com/artifactory/api/pypi/edge-ai-tooling.pypi/cairn-sdk-lib/0.0.1.dev20260930144748/cairn_sdk_lib-0.0.1.dev20260930144748-cp312-abi3-linux_aarch64.whl" }
 wheels = [
-    { url = "https://artifactory.arm.com/artifactory/api/pypi/edge-ai-tooling.pypi/cairn-sdk-lib/0.0.1/cairn_sdk_lib-0.0.1-cp312-abi3-linux_aarch64.whl", hash = "sha256:3857440408f91318e45de3b484e7c8b3600a6cc4dc3d68f157f22d8fd14ce7dc" },
+    { url = "https://artifactory.arm.com/artifactory/api/pypi/edge-ai-tooling.pypi/cairn-sdk-lib/0.0.1.dev20260930144748/cairn_sdk_lib-0.0.1.dev20260930144748-cp312-abi3-linux_aarch64.whl", hash = "sha256:b6c18340325cdb3b536f70b4e39657cb5cb6bc26c224eb1a3cbb0ca85ff56941" },
 ]
 
 [[package]]
