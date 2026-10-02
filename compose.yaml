@@ -68,6 +68,7 @@ services:
     build:
       context: .
       args:
+        ARTIFACTORY_USERNAME: ${ARTIFACTORY_USERNAME:?Set your Artifactory username}
         OPK_HF_DETECTION_MODEL: ${OPK_HF_DETECTION_MODEL:-Arm/yolo26n-640-int8-onnx-raspberrypi5}
       secrets: [artifactory_token, hf_token]
     network_mode: host
@@ -93,7 +94,7 @@ x-topo:
   name: Cairn Perception Object Detection example
   type: application
   description: Runs a Cairn camera-to-inference workflow and prints object detections.
-  deployment_success_message: "View live logs: \nssh ${TOPO_TARGET} 'docker logs --follow perception-hello-world-perception-example-1'"
+  deployment_success_message: "View live logs: \nssh ${TOPO_TARGET} 'docker logs --follow cairn-perception-object-detection-perception-example-1'"
   parameters:
     OPK_HF_DETECTION_MODEL:
       description: Hugging Face repository for the object-detection model

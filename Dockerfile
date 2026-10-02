@@ -4,6 +4,7 @@ ARG UV_IMAGE=ghcr.io/astral-sh/uv:trixie-slim@sha256:4298dc3494124b50792f7abbdfe
 FROM ${UV_IMAGE} AS builder
 
 ARG OPK_HF_DETECTION_MODEL=Arm/yolo26n-640-int8-onnx-raspberrypi5
+ARG ARTIFACTORY_USERNAME
 ENV UV_PYTHON_INSTALL_DIR=/opt/uv/python
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl \
     && rm -rf /var/lib/apt/lists/*
@@ -18,9 +19,15 @@ WORKDIR /app
 
 COPY pyproject.toml uv.lock ./
 RUN --mount=type=secret,id=artifactory_token,required=true \
-    UV_INDEX_EDGE_AI_TOOLING_USERNAME="" \
+    set -eu; \
+    previous_umask="$(umask)"; umask 077; \
+    printf 'machine artifactory.arm.com login %s password %s\n' "$ARTIFACTORY_USERNAME" "$(cat /run/secrets/artifactory_token)" > /tmp/artifactory.netrc; \
+    umask "$previous_umask"; \
+    NETRC=/tmp/artifactory.netrc \
+    UV_INDEX_EDGE_AI_TOOLING_USERNAME="$ARTIFACTORY_USERNAME" \
     UV_INDEX_EDGE_AI_TOOLING_PASSWORD="$(cat /run/secrets/artifactory_token)" \
-    uv sync --locked --no-dev --no-install-project
+    uv sync --locked --no-dev --no-install-project; \
+    rm /tmp/artifactory.netrc
 
 FROM ${UV_IMAGE} AS runtime
 

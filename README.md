@@ -8,29 +8,37 @@ Start by cloning the project, and providing a compatible model.
 ## Pre-release
 The following steps only apply pre-release: 
 
-Copy the credential template and set both values. Set
-`OPK_HF_DETECTION_MODEL` to either `Arm/yolo26n-640-int8-onnx-raspberrypi5` or its full Hugging Face URL
-to select the object-detection model.
+Provide your Artifactory username and access token. The token is used for both
+private service images and the SDK wheel; the model token is only needed if
+the Hugging Face model requires authentication. The default model is
+`Arm/yolo26n-640-int8-onnx-raspberrypi5`.
 
-bash, sh, zsh, etc.
+Copy `.env.example` to `.env` and fill in `ARTIFACTORY_USERNAME` and
+`ARTIFACTORY_TOKEN` (and `HF_TOKEN` if needed). `.env` is ignored by Git and
+Topo reads it during deployment. If credentials are already exported in your
+shell, do not overwrite them by sourcing an empty template.
+
 ```sh
 cp .env.example .env
-set -a; . ./.env; set +a
+# Edit .env with your credentials.
 ```
 
-or for fish:
+Authenticate the host Docker daemon to pull the service images. In bash,
+sh, or zsh:
+
+```sh
+set -a; . ./.env; set +a
+printf '%s' "$ARTIFACTORY_TOKEN" | docker login edge-ai-tooling--sdk-docker-registry.artifactory.eu02.arm.com --username "$ARTIFACTORY_USERNAME" --password-stdin
+```
+
+For fish, export the values from `.env` before running `docker login`:
+
 ```fish
 for line in (string match -rv '^\s*(#|$)' < .env)
     set -l entry (string split -m1 = -- $line)
     set -gx $entry[1] $entry[2]
 end
-```
-
-Authenticate Docker to the private service-image registry, replacing
-`<artifactory-username>` with your Artifactory username:
-
-```sh
-printf '%s' "$ARTIFACTORY_TOKEN" | docker login edge-ai-tooling--sdk-docker-registry.artifactory.eu02.arm.com --username '<artifactory-username>' --password-stdin
+printf '%s' "$ARTIFACTORY_TOKEN" | docker login edge-ai-tooling--sdk-docker-registry.artifactory.eu02.arm.com --username "$ARTIFACTORY_USERNAME" --password-stdin
 ```
 
 ## Deploy
@@ -39,11 +47,11 @@ Deploy to a remote or local target using [Topo](https://developer.arm.com/dev-do
 Your target will need a USB web camera, or a Pi Camera plugged in.
 
 ```sh
-topo deploy --target user@my-linux-device
+topo deploy --target pi5-rod
 ```
 On success, a command will be printed to ssh and print out the inferences run on the container.
 
 Stop the stack when finished:
 ```sh
-topo stop --target user@my-linux-device
+topo stop --target pi5-rod
 ```
