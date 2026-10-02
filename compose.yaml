@@ -70,7 +70,6 @@ services:
       args:
         OPK_HF_DETECTION_MODEL: ${OPK_HF_DETECTION_MODEL:-Arm/yolo26n-640-int8-onnx-raspberrypi5}
       secrets: [artifactory_token, hf_token]
-    # SDK defaults reach the host camera and loopback-published services.
     network_mode: host
     environment:
       WORKFLOW_DURATION_SECONDS: 60
