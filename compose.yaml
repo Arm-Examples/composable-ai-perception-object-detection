@@ -69,7 +69,7 @@ services:
       context: .
       args:
         ARTIFACTORY_USERNAME: ${ARTIFACTORY_USERNAME:?Set your Artifactory username}
-        OPK_HF_DETECTION_MODEL: ${OPK_HF_DETECTION_MODEL:-Arm/yolo26n-640-int8-onnx-raspberrypi5}
+        OPK_HF_DETECTION_MODEL: ${OPK_HF_DETECTION_MODEL:-Arm/yolo26n-320-int8-onnx-raspberrypi5}
       secrets: [artifactory_token, hf_token]
     network_mode: host
     environment:
@@ -99,8 +99,8 @@ x-topo:
     OPK_HF_DETECTION_MODEL:
       description: Hugging Face repository for the object-detection model
       required: false
-      default: Arm/yolo26n-640-int8-onnx-raspberrypi5
-      example: https://huggingface.co/Arm/yolo26n-640-int8-onnx-raspberrypi5
+      default: Arm/yolo26n-320-int8-onnx-raspberrypi5
+      example: https://huggingface.co/Arm/yolo26n-320-int8-onnx-raspberrypi5
       hints:
         meta.type: huggingface.repo-id
         meta.compatibility: opk
