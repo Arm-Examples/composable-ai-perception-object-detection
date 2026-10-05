@@ -11,7 +11,9 @@ The following steps only apply pre-release:
 Provide your Artifactory username and access token. The token is used for both
 private service images and the SDK wheel; the model token is only needed if
 the Hugging Face model requires authentication. The default model is
-`Arm/yolo26n-640-int8-onnx-raspberrypi5`.
+`Arm/yolo26n-320-int8-onnx-raspberrypi5`, prioritising responsiveness over detection
+accuracy. Set `OPK_HF_DETECTION_MODEL=Arm/yolo26n-640-int8-onnx-raspberrypi5`
+to use the higher-resolution model instead.
 
 Copy `.env.example` to `.env` and fill in `ARTIFACTORY_USERNAME` and
 `ARTIFACTORY_TOKEN` (and `HF_TOKEN` if needed). `.env` is ignored by Git and
