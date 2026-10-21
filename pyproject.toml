@@ -3,14 +3,9 @@ name = "cairn-perception-object-detection-example"
 version = "0.0.0"
 requires-python = ">=3.12,<3.13"
 dependencies = [
-    "cairn-sdk-lib==0.0.1.dev20260930144748",
+    "arm-cairn==0.0.1",
     "protobuf==7.35.1",
 ]
 
 [tool.uv.sources]
-cairn-sdk-lib = { url = "https://artifactory.arm.com/artifactory/api/pypi/edge-ai-tooling.pypi/cairn-sdk-lib/0.0.1.dev20260930144748/cairn_sdk_lib-0.0.1.dev20260930144748-cp312-abi3-linux_aarch64.whl" }
-
-[[tool.uv.index]]
-name = "edge-ai-tooling"
-url = "https://artifactory.arm.com/artifactory/api/pypi/edge-ai-tooling.pypi/simple"
-explicit = true
+arm-cairn = { git = "https://github.com/Arm/composable-ai-runtimes.git", rev = "520cd76d2fed9986a0dc6c09e092f7dd655ebe1c", subdirectory = "lib" }
