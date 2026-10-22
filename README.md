@@ -9,13 +9,14 @@ Start by cloning the project, and providing a compatible model.
 
 Deploy to a remote or local target using [Topo](https://developer.arm.com/dev-docs/topo/introduction/install/).
 Your target will need a USB web camera, or a Pi Camera plugged in.
+Replace `[user@]host` below with your SSH destination or SSH config alias.
 
 ```sh
-topo deploy --target pi5-rod
+topo deploy --target [user@]host
 ```
 On success, a command will be printed to ssh and print out the inferences run on the container.
 
 Inference runs continuously until you stop the stack:
 ```sh
-topo stop --target pi5-rod
+topo stop --target [user@]host
 ```
