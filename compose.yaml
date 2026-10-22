@@ -1,7 +1,7 @@
 services:
   messaging-service:
     platform: linux/arm64
-    image: edge-ai-tooling--sdk-docker-registry.artifactory.eu02.arm.com/cairn-messaging-service:test-f805dd1a-20260930144748
+    image: armlimited/arm-cairn-messaging-service:0.0.1
     ports: ["127.0.0.1:6379:6379"]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
@@ -11,19 +11,13 @@ services:
 
   camera-service:
     platform: linux/arm64
-    image: edge-ai-tooling--sdk-docker-registry.artifactory.eu02.arm.com/cairn-camera-service:test-f805dd1a-20260930144748
+    image: armlimited/arm-cairn-camera-service:0.0.1
     user: root
     entrypoint: ["/usr/local/bin/permissions-set-entrypoint.sh"]
     network_mode: host
     group_add: [video]
     cap_add: [SYS_NICE]
     device_cgroup_rules: ["c *:* rw"]
-    environment:
-      XDG_RUNTIME_DIR: /run/pipewire
-      PWC_REDIS_ENABLED: 1
-      PWC_REDIS_HOST: 127.0.0.1
-      PWC_REDIS_PORT: 6379
-      PWC_REDIS_CHANNEL_EVENTS: camera.events
     volumes:
       - pipewire-runtime:/run/pipewire
       - /dev:/dev
@@ -40,19 +34,11 @@ services:
 
   perception-service:
     platform: linux/arm64
-    image: edge-ai-tooling--sdk-docker-registry.artifactory.eu02.arm.com/cairn-perception-service:test-f805dd1a-20260930144748
+    image: armlimited/arm-cairn-perception-service:0.0.1
     ports: ["127.0.0.1:50053:50053"]
     depends_on:
       messaging-service:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD", "grpc_health_probe", "-addr=127.0.0.1:50053"]
-      interval: 5s
-      timeout: 6s
-      start_period: 15s
-      retries: 12
-    environment:
-      XDG_RUNTIME_DIR: /run/pipewire
     volumes:
       - pipewire-runtime:/run/pipewire:ro
       - type: image
@@ -68,24 +54,14 @@ services:
     build:
       context: .
       args:
-        ARTIFACTORY_USERNAME: ${ARTIFACTORY_USERNAME:?Set your Artifactory username}
         OPK_HF_DETECTION_MODEL: ${OPK_HF_DETECTION_MODEL:-Arm/yolo26n-320-int8-onnx-raspberrypi5}
-      secrets: [artifactory_token, hf_token]
     network_mode: host
-    environment:
-      WORKFLOW_DURATION_SECONDS: 60
     depends_on:
       camera-service:
         condition: service_healthy
       perception-service:
         condition: service_healthy
     restart: "no"
-
-secrets:
-  artifactory_token:
-    environment: ARTIFACTORY_TOKEN
-  hf_token:
-    environment: HF_TOKEN
 
 volumes:
   pipewire-runtime:
