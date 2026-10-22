@@ -1,4 +1,4 @@
-# Cairn:Perception Object Detection Example
+# Cairn: Perception Object Detection Example
 
 This example shows the [Cairn](https://github.com/arm/composable-ai-runtimes) Open Perception Stack in action, running inference models on a camera.
 
