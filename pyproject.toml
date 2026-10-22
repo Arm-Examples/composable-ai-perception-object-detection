@@ -6,6 +6,3 @@ dependencies = [
     "arm-cairn==0.0.1",
     "protobuf==7.35.1",
 ]
-
-[tool.uv.sources]
-arm-cairn = { git = "https://github.com/Arm/composable-ai-runtimes.git", rev = "520cd76d2fed9986a0dc6c09e092f7dd655ebe1c", subdirectory = "lib" }

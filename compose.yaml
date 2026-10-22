@@ -1,7 +1,7 @@
 services:
   messaging-service:
     platform: linux/arm64
-    image: edge-ai-tooling--sdk-docker-registry.artifactory.eu02.arm.com/cairn-messaging-service:test-f805dd1a-20260930144748
+    image: docker.io/armlimited/arm-cairn-messaging-service:0.0.1
     ports: ["127.0.0.1:6379:6379"]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
@@ -11,7 +11,7 @@ services:
 
   camera-service:
     platform: linux/arm64
-    image: edge-ai-tooling--sdk-docker-registry.artifactory.eu02.arm.com/cairn-camera-service:test-f805dd1a-20260930144748
+    image: docker.io/armlimited/arm-cairn-camera-service:0.0.1
     user: root
     entrypoint: ["/usr/local/bin/permissions-set-entrypoint.sh"]
     network_mode: host
@@ -40,7 +40,7 @@ services:
 
   perception-service:
     platform: linux/arm64
-    image: edge-ai-tooling--sdk-docker-registry.artifactory.eu02.arm.com/cairn-perception-service:test-f805dd1a-20260930144748
+    image: docker.io/armlimited/arm-cairn-perception-service:0.0.1
     ports: ["127.0.0.1:50053:50053"]
     depends_on:
       messaging-service:
@@ -68,9 +68,8 @@ services:
     build:
       context: .
       args:
-        ARTIFACTORY_USERNAME: ${ARTIFACTORY_USERNAME:?Set your Artifactory username}
         OPK_HF_DETECTION_MODEL: ${OPK_HF_DETECTION_MODEL:-Arm/yolo26n-320-int8-onnx-raspberrypi5}
-      secrets: [artifactory_token, hf_token]
+      secrets: [hf_token]
     network_mode: host
     environment:
       WORKFLOW_DURATION_SECONDS: 60
@@ -82,8 +81,6 @@ services:
     restart: "no"
 
 secrets:
-  artifactory_token:
-    environment: ARTIFACTORY_TOKEN
   hf_token:
     environment: HF_TOKEN
 
