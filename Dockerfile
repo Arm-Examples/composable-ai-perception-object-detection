@@ -29,4 +29,4 @@ RUN useradd --create-home --uid 10001 app
 
 USER app
 
-CMD ["uv", "run", "main.py"]
+CMD ["/app/.venv/bin/python", "-u", "main.py"]

@@ -1,5 +1,5 @@
 import asyncio
-import os
+import signal
 
 from cairn import CameraService, Notification, NotificationService
 from cairn.perception import (
@@ -8,8 +8,6 @@ from cairn.perception import (
     PerceptionService,
     PerceptionWorkflow,
 )
-
-WORKFLOW_DURATION_SECONDS = float(os.environ.get("WORKFLOW_DURATION_SECONDS", "60"))
 
 
 async def main() -> None:
@@ -61,11 +59,19 @@ async def main() -> None:
         subscription = await notifications.subscribe(
             session.topics.results, print_result
         )
+        stopped = asyncio.Event()
+        loop = asyncio.get_running_loop()
+        for shutdown_signal in (signal.SIGTERM, signal.SIGINT):
+            loop.add_signal_handler(shutdown_signal, stopped.set)
         try:
-            await asyncio.sleep(WORKFLOW_DURATION_SECONDS)
+            await stopped.wait()
         finally:
-            await notifications.unsubscribe(subscription)
-            await session.stop()
+            for shutdown_signal in (signal.SIGTERM, signal.SIGINT):
+                loop.remove_signal_handler(shutdown_signal)
+            try:
+                await notifications.unsubscribe(subscription)
+            finally:
+                await session.stop()
 
 
 if __name__ == "__main__":

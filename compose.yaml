@@ -61,7 +61,6 @@ services:
         condition: service_healthy
       perception-service:
         condition: service_healthy
-    restart: "no"
 
 volumes:
   pipewire-runtime:

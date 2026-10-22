@@ -15,7 +15,7 @@ topo deploy --target pi5-rod
 ```
 On success, a command will be printed to ssh and print out the inferences run on the container.
 
-Stop the stack when finished:
+Inference runs continuously until you stop the stack:
 ```sh
 topo stop --target pi5-rod
 ```
