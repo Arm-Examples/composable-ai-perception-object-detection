@@ -1,8 +1,8 @@
 import asyncio
 import os
 
-from cairn_sdk import CameraService, Notification, NotificationService
-from cairn_sdk.perception import (
+from cairn import CameraService, Notification, NotificationService
+from cairn.perception import (
     BoxDetections,
     PerceptionResult,
     PerceptionService,
@@ -41,7 +41,7 @@ async def main() -> None:
 
     service = await PerceptionService.connect()
     session = await service.deploy(workflow)
-    if session.topics is None:
+    if session.topics.results is None:
         raise RuntimeError("deployment returned no results topic")
 
     async def print_result(notification: Notification) -> None:
