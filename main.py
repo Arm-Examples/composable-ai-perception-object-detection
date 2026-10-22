@@ -52,7 +52,8 @@ async def main() -> None:
         ]
         print(
             f"result topic={notification.channel} "
-            f"detections={', '.join(detections) or 'none'}"
+            f"detections={', '.join(detections) or 'none'}",
+            flush=True,
         )
 
     async with NotificationService() as notifications:
