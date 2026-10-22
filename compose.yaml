@@ -69,7 +69,7 @@ x-topo:
   name: Cairn Perception Object Detection example
   type: application
   description: Runs a Cairn camera-to-inference workflow and prints object detections.
-  deployment_success_message: "View live logs: \nssh ${TOPO_TARGET} 'docker logs --follow cairn-perception-object-detection-perception-example-1'"
+  deployment_success_message: "View live logs: \nssh ${TOPO_TARGET} 'docker logs --follow composable-ai-perception-object-detection-perception-example-1'"
   parameters:
     OPK_HF_DETECTION_MODEL:
       description: Hugging Face repository for the object-detection model
