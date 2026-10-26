@@ -1,7 +1,7 @@
 services:
   messaging-service:
     platform: linux/arm64
-    image: armlimited/arm-cairn-messaging-service:0.0.1
+    image: armlimited/arm-cairn-messaging-service:0.0.2
     ports: ["127.0.0.1:6379:6379", "127.0.0.1:50054:50054"]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
@@ -11,7 +11,7 @@ services:
 
   camera-service:
     platform: linux/arm64
-    image: armlimited/arm-cairn-camera-service:0.0.1
+    image: armlimited/arm-cairn-camera-service:0.0.2
     user: root
     entrypoint: ["/usr/local/bin/permissions-set-entrypoint.sh"]
     network_mode: host
@@ -34,7 +34,7 @@ services:
 
   perception-service:
     platform: linux/arm64
-    image: armlimited/arm-cairn-perception-service:0.0.1
+    image: armlimited/arm-cairn-perception-service:0.0.2
     ports: ["127.0.0.1:50053:50053"]
     depends_on:
       messaging-service:
