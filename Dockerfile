@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
-ARG UV_IMAGE=ghcr.io/astral-sh/uv:trixie-slim@sha256:4298dc3494124b50792f7abbdfe2cae7139c41f4e098f52573f4f6d912cf8bd7
+ARG UV_IMAGE=ghcr.io/astral-sh/uv:trixie-slim@sha256:95611d89b7324e0517fe7257bb00979cf1f68461e5fb2b2d027d039da054bc07
 
 FROM ${UV_IMAGE} AS builder
 

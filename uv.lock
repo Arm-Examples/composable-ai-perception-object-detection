@@ -1,13 +1,13 @@
 version = 1
 revision = 3
-requires-python = "==3.12.*"
+requires-python = ">=3.13.17, <3.14"
 
 [[package]]
 name = "arm-cairn"
-version = "0.0.1"
+version = "0.0.2"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/22/3e/67a00b83f6e506c0f83b807fe02bf2e5ab0196e8078964b1dda8c42c3be7/arm_cairn-0.0.1-cp312-abi3-manylinux_2_34_aarch64.whl", hash = "sha256:b0553e958d4c2d767063be83db64ce3a6556103fe32a8e16b9ca775ffdaa6ce6", size = 2417442, upload-time = "2026-10-20T15:58:41.164Z" },
+    { url = "https://files.pythonhosted.org/packages/80/23/a4c6571b8c905be73c5bc7e043927389b3795ee3d93763f291bb5eebfc4d/arm_cairn-0.0.2-cp313-abi3-manylinux_2_34_aarch64.whl", hash = "sha256:46b2d8d501fc0b3b00f3c0e1156dc0f4aa3acda8227a323a740e7bf5b965da7e", size = 2541702, upload-time = "2026-10-26T16:55:49.645Z" },
 ]
 
 [[package]]
@@ -19,4 +19,4 @@ dependencies = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "arm-cairn", specifier = "==0.0.1" }]
+requires-dist = [{ name = "arm-cairn", specifier = "==0.0.2" }]

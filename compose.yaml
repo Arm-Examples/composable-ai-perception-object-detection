@@ -1,12 +1,12 @@
 services:
   messaging-service:
     platform: linux/arm64
-    image: armlimited/arm-cairn-messaging-service:0.0.1
-    ports: ["127.0.0.1:6379:6379"]
+    image: armlimited/arm-cairn-messaging-service:0.0.2
+    ports: ["127.0.0.1:6379:6379", "127.0.0.1:50054:50054"]
 
   camera-service:
     platform: linux/arm64
-    image: armlimited/arm-cairn-camera-service:0.0.1
+    image: armlimited/arm-cairn-camera-service:0.0.2
     user: root
     entrypoint: ["/usr/local/bin/permissions-set-entrypoint.sh"]
     network_mode: host
@@ -23,7 +23,7 @@ services:
 
   perception-service:
     platform: linux/arm64
-    image: armlimited/arm-cairn-perception-service:0.0.1
+    image: armlimited/arm-cairn-perception-service:0.0.2
     ports: ["127.0.0.1:50053:50053"]
     depends_on:
       messaging-service:
@@ -50,7 +50,6 @@ services:
         condition: service_healthy
       perception-service:
         condition: service_healthy
-    restart: "no"
 
 volumes:
   pipewire-runtime:
@@ -59,7 +58,7 @@ x-topo:
   name: Cairn Perception Object Detection example
   type: application
   description: Runs a Cairn camera-to-inference workflow and prints object detections.
-  deployment_success_message: "View live logs: \nssh ${TOPO_TARGET} 'docker logs --follow cairn-perception-object-detection-perception-example-1'"
+  deployment_success_message: "View live logs: \nssh ${TOPO_TARGET} 'docker logs --follow composable-ai-perception-object-detection-perception-example-1'"
   parameters:
     OPK_HF_DETECTION_MODEL:
       description: Hugging Face repository for the object-detection model
