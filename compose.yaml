@@ -24,7 +24,23 @@ services:
   perception-service:
     platform: linux/arm64
     image: armlimited/arm-cairn-perception-service:0.0.2
-    ports: ["127.0.0.1:50053:50053"]
+    # WebRTC needs reachable host ICE candidates and dynamic UDP media ports.
+    network_mode: host
+    command:
+      - /app/.venv/bin/python
+      - -B
+      - -m
+      - perception_service
+      - --host
+      - 127.0.0.1
+      - --redis-url
+      - redis://127.0.0.1:6379/0
+      - --opk-comm-first-port
+      - "8002"
+      - --model-path
+      - /models
+      - --model-schema-path
+      - /opt/opk/share/opk/schemas/json/v1
     depends_on:
       messaging-service:
         condition: service_healthy

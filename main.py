@@ -4,6 +4,7 @@ import signal
 from cairn import CameraService, Notification, NotificationService
 from cairn.perception import (
     BoxDetections,
+    DebugOutput,
     PerceptionResult,
     PerceptionService,
     PerceptionWorkflow,
@@ -36,6 +37,7 @@ async def main() -> None:
         camera_configuration,
     )
     workflow.infer("objects", "detection_model")
+    workflow.output(DebugOutput(http_port=9999, ws_port=8000, ctrl_port=8001))
 
     service = await PerceptionService.connect()
     session = await service.deploy(workflow)

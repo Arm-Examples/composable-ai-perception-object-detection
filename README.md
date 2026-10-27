@@ -16,6 +16,23 @@ topo deploy --target [user@]host
 ```
 On success, a command will be printed to ssh and print out the inferences run on the container.
 
+## Debug viewer
+
+Open `http://<target-ip>:9999` in a browser on the same network to see the
+camera stream with detection overlays. Use the target's IP address rather than
+its SSH alias unless that alias also resolves in DNS.
+
+The workflow enables Cairn's `DebugOutput` (the OPK debug viewer) on TCP ports
+`9999` (HTTP), `8000` (WebRTC signalling), and `8001` (control). Cairn's results
+WebSocket starts at `8002`, matching the viewer's inference and performance panels.
+This example runs one workflow; additional sessions would use subsequent ports.
+The perception service uses host networking so WebRTC's dynamically allocated
+UDP media ports are reachable too; forwarding only the TCP ports over SSH is
+not enough for video. The gRPC API and Redis remain bound to loopback.
+
+The debug viewer exposes camera video and controls without authentication.
+Use it only on a trusted network; do not forward these ports to the internet.
+
 Inference runs continuously until you stop the stack:
 ```sh
 topo stop --target [user@]host
