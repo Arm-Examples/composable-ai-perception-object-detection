@@ -3,8 +3,12 @@
 This example shows the [Composable AI Runtimes](https://github.com/arm/composable-ai-runtimes)
 Perception Stack in action, running inference models on a camera.
 
-Start by cloning the project, and providing a compatible model.
+Start by cloning the project:
 `topo clone https://github.com/Arm-Examples/composable-ai-perception-object-detection.git`
+
+The default model is [UltraFace RFB-320 INT8](https://huggingface.co/Arm/ultraface-rfb-320-onnx-raspberry),
+which detects faces rather than general objects. To use another compatible model,
+pass `OPK_HF_DETECTION_MODEL=<Hugging Face repository>` to `topo clone`.
 
 ## Deploy
 
