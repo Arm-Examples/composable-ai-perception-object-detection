@@ -15,7 +15,7 @@ Replace `[user@]host` below with your SSH destination or SSH config alias.
 ```sh
 topo deploy --target [user@]host
 ```
-On success, a command will be printed to ssh and print out the inferences run on the container.
+On success, a command will be printed to follow the application's inference logs.
 
 Inference runs continuously until you stop the stack:
 ```sh
