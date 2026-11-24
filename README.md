@@ -1,7 +1,7 @@
 # Cairn: Perception Object Detection Example
 
 This example shows the [Composable AI Runtimes](https://github.com/arm/composable-ai-runtimes)
-Perception Stack in action, running inference models on a camera.
+Perception Stack in action, running inference models on a camera. Powered by the [Open Perception Kit](https://github.com/arm/open-perception-kit/).
 
 Start by cloning the project, and providing a compatible model.
 `topo clone https://github.com/Arm-Examples/composable-ai-perception-object-detection.git`
